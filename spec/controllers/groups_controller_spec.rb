@@ -1,6 +1,23 @@
 require 'rails_helper'
 
 RSpec.describe GroupsController, type: :controller do
+  describe "GET #index" do
+    it "assigns all users as @users" do
+      group = create(:group)
+      get :index, format: :json
+
+      expect(assigns(:groups)).to eq([group])
+    end
+
+    it "filters by group type" do
+      create(:group)
+      group2 = create(:group, group_type: 'the-type')
+      get :index, params: { group_type: 'the-type' }, format: :json
+
+      expect(assigns(:groups)).to eq([group2])
+    end
+  end
+
   describe "GET #show" do
     it "assigns the requested user as @user" do
       group = create :group

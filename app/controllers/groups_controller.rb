@@ -3,6 +3,14 @@ class GroupsController < ApplicationController
 
   before_action :set_parent_group, only: :create
 
+  def index
+    @groups = if params[:group_type]
+                Group.where(group_type: params[:group_type])
+              else
+                Group.all
+              end
+  end
+
   def show
     @group = Group.find(params[:id])
   end
