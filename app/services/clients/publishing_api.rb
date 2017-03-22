@@ -15,17 +15,26 @@ module Clients
 
     def find_each(fields, options = {})
       current_page = 1
-
       query = build_base_query(fields, options)
 
       loop do
         query = build_current_page_query(query, current_page)
         response = publishing_api.get_content_items(query)
-        response["results"].each { |result| yield result.symbolize_keys }
+        response["results"].each do |result|
+          if options[:expand_links]
+            result[:expanded_links] = expand_links(result["content_id"])
+          end
+          yield result.symbolize_keys
+        end
 
         break if last_page?(response)
         current_page = response["current_page"] + 1
       end
+    end
+
+    def expand_links(content_id, include_drafts: false)
+      response = publishing_api.get_expanded_links(content_id, with_drafts: include_drafts)
+      response["expanded_links"].deep_symbolize_keys
     end
 
   private
