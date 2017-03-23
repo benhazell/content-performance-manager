@@ -1,9 +1,26 @@
 class ContentItemDecorator < Draper::Decorator
   delegate_all
 
+  def title
+    context[:title] || object.title
+  end
+
+  def description
+    context[:description] || object.description
+  end
+
+  def document_type
+    context[:document_type] || object.document_type
+  end
+
+  def url
+    "https://gov.uk#{context[:base_path] || object.base_path}"
+  end
+
   def last_updated
-    if object.public_updated_at
-      "#{helpers.time_ago_in_words(object.public_updated_at)} ago"
+    date = context[:public_updated_at] || object.public_updated_at
+    if date
+      "#{helpers.time_ago_in_words(date)} ago"
     else
       "Never"
     end

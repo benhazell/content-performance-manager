@@ -5,13 +5,6 @@ RSpec.describe ContentItem, type: :model do
 
   it { should have_and_belong_to_many(:taxonomies) }
 
-  describe "#url" do
-    it "returns a url to a content item on gov.uk" do
-      content_item = build(:content_item, base_path: "/api/content/item/path/1")
-      expect(content_item.url).to eq("https://gov.uk/api/content/item/path/1")
-    end
-  end
-
   describe "#create_or_update" do
     it "creates a content item if it does not exist" do
       content_item = { content_id: "second_id", taxons: [], organisations: [] }

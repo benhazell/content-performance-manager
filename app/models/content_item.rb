@@ -2,10 +2,6 @@ class ContentItem < ApplicationRecord
   has_and_belongs_to_many :organisations
   has_and_belongs_to_many :taxonomies
 
-  def url
-    "https://gov.uk#{base_path}"
-  end
-
   def self.create_or_update!(attributes)
     content_id = attributes.fetch(:content_id)
     content_item = self.find_or_create_by(content_id: content_id)
