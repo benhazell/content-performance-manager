@@ -61,4 +61,14 @@ RSpec.describe Clients::PublishingAPI do
       subject.expand_links("the_id")
     end
   end
+
+  describe "#find_by_id" do
+    it "requests the content item by id from the publishing api" do
+      subject.publishing_api = double
+
+      expect(subject.publishing_api).to receive(:get_content).with("the_id").and_return({})
+
+      subject.find_by_id("the_id")
+    end
+  end
 end

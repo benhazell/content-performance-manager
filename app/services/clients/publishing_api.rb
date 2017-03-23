@@ -32,6 +32,10 @@ module Clients
       end
     end
 
+    def find_by_id(content_id)
+      publishing_api.get_content(content_id).to_hash.deep_symbolize_keys
+    end
+
     def expand_links(content_id, include_drafts: false)
       response = publishing_api.get_expanded_links(content_id, with_drafts: include_drafts)
       response["expanded_links"].deep_symbolize_keys
