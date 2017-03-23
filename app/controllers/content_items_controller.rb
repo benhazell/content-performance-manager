@@ -11,10 +11,15 @@ class ContentItemsController < ApplicationController
       taxonomy: @taxonomy,
       organisation: @organisation
     ).decorate
+
+    ContentItemDecorator.decorate_collection(@content_items)
   end
 
   def show
-    @content_item = ContentItem.find(params[:id]).decorate
+    content_item = ContentItem.find(params[:id])
+    attributes = ContentItemsService.new.get(content_item.content_id)
+
+    @content_item = content_item.decorate(context: attributes)
   end
 
   def filter
