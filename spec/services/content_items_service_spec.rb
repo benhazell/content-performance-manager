@@ -32,4 +32,16 @@ RSpec.describe ContentItemsService do
       expect { subject.find_each('organisation-slug') }.to raise_exception('missing block!')
     end
   end
+
+  describe "#get" do
+    it 'queries the publishing API for a content item for a given ID and returns it' do
+      subject.publishing_api = double
+
+      expect(subject.publishing_api).to receive(:find_by_id).with("the_id").and_return({})
+
+      content_item = subject.get("the_id")
+
+      expect(content_item).to eq({})
+    end
+  end
 end

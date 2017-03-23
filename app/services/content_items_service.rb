@@ -15,6 +15,10 @@ class ContentItemsService
     end
   end
 
+  def get(content_id)
+    publishing_api.find_by_id(content_id)
+  end
+
 private
 
   def build_query_options(document_type)
