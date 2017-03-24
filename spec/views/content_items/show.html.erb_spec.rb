@@ -2,13 +2,10 @@ require 'rails_helper'
 
 RSpec.describe 'content_items/show.html.erb', type: :view do
   let(:content_item) { build(:content_item).decorate }
-  let(:organisation) { build(:organisation) }
-  let(:taxonomy) { build(:taxonomy, title: "taxon title") }
 
   before do
     assign(:content_item, content_item)
-    assign(:organisation, organisation)
-    content_item.organisations << organisation
+    # content_item.proxy = {}
   end
 
   it 'renders the table header with the right headings' do
@@ -19,15 +16,16 @@ RSpec.describe 'content_items/show.html.erb', type: :view do
   end
 
   it 'renders the title' do
-    content_item.title = 'A Title'
+    allow(content_item).to receive(:title).and_return("A Title")
     render
 
     expect(rendered).to have_selector('h1', text: 'A Title')
   end
 
   it 'renders the url' do
-    content_item.base_path = '/content/1/path'
-    content_item.title = 'A Title'
+    allow(content_item).to receive(:url).and_return("https://gov.uk/content/1/path")
+    allow(content_item).to receive(:title).and_return("A Title")
+
     render
 
     expect(rendered).to have_selector('td', text: 'Page on GOV.UK')
@@ -35,7 +33,8 @@ RSpec.describe 'content_items/show.html.erb', type: :view do
   end
 
   it 'renders the document type' do
-    content_item.document_type = 'guidance'
+    allow(content_item).to receive(:document_type).and_return("guidance")
+
     render
 
     expect(rendered).to have_selector('td', text: 'Type of document')
@@ -43,7 +42,8 @@ RSpec.describe 'content_items/show.html.erb', type: :view do
   end
 
   it 'renders the number of views' do
-    content_item.unique_page_views = 10
+    allow(content_item).to receive(:unique_page_views).and_return(10)
+
     render
 
     expect(rendered).to have_selector('td', text: 'Unique page views (last 1 month)')
@@ -51,17 +51,17 @@ RSpec.describe 'content_items/show.html.erb', type: :view do
   end
 
   it 'renders the last updated date' do
-    Timecop.freeze('2016-3-20') do
-      content_item.public_updated_at = Date.parse('2016-1-20')
-      render
-    end
+    allow(content_item).to receive(:last_updated).and_return("2 months ago")
+
+    render
 
     expect(rendered).to have_selector('td', text: 'Last updated')
     expect(rendered).to have_selector('td + td', text: '2 months ago')
   end
 
   it 'renders the description of the content item' do
-    content_item.description = 'The description of a content item'
+    allow(content_item).to receive(:description).and_return("The description of a content item")
+
     render
 
     expect(rendered).to have_selector('td', text: 'Description')
@@ -69,7 +69,8 @@ RSpec.describe 'content_items/show.html.erb', type: :view do
   end
 
   it 'renders the number of pdfs the content item has' do
-    content_item.number_of_pdfs = 10
+    allow(content_item).to receive(:number_of_pdfs).and_return(10)
+
     render
 
     expect(rendered).to have_selector('td', text: 'Number of pdfs')
@@ -77,32 +78,21 @@ RSpec.describe 'content_items/show.html.erb', type: :view do
   end
 
   it 'renders the taxonomies' do
-    content_item.taxonomies = [taxonomy]
+    content_item.taxonomies << build_list(:taxonomy, 2, title: "Taxon Title")
+
     render
 
     expect(rendered).to have_selector('td', text: 'Taxonomies')
-    expect(rendered).to have_selector('td + td', text: "taxon title")
+    expect(rendered).to have_selector('td + td', text: "Taxon Title, Taxon Title")
   end
 
-  context "content items belong to multiple organisations" do
-    let(:content_item) { create(:content_item_with_organisations, organisations_count: 2).decorate }
+  it 'renders the organisations' do
+    organisations = build_list(:organisation, 2, title: "Org Title")
+    content_item.organisations << organisations
 
-    it 'renders the organisations names' do
-      content_item.organisations[0].title = 'An Organisation'
-      content_item.organisations[1].title = 'Another Organisation'
-      render
+    render
 
-      expect(rendered).to have_selector('td', text: 'Organisation')
-      expect(rendered).to have_selector('td + td', text: 'An Organisation, Another Organisation')
-    end
-
-    context 'item has never been published' do
-      it 'renders for no last updated value' do
-        content_item.public_updated_at = nil
-        render
-
-        expect(rendered).to have_selector('table tbody tr:nth(5) td:nth(2)', text: 'Never')
-      end
-    end
+    expect(rendered).to have_selector('td', text: 'Organisation')
+    expect(rendered).to have_selector('td + td', text: 'Org Title, Org Title')
   end
 end

@@ -45,16 +45,9 @@ RSpec.describe ContentItemsController, type: :controller do
 
   describe "GET #show" do
     context "find by content item" do
-      let!(:content_item) { create(:content_item, id: 1, content_id: "the_id") }
+      let!(:content_item) { create(:content_item, id: 1) }
 
       before do
-        allow_any_instance_of(ContentItemsService).to receive(:get).and_return(b: :a)
-        get :show, params: { id: 1 }
-      end
-
-      it "requests the content item by content_id and uses it as the decorator context" do
-        expect_any_instance_of(ContentItemsService).to receive(:get).with("the_id")
-
         get :show, params: { id: 1 }
       end
 
@@ -68,7 +61,6 @@ RSpec.describe ContentItemsController, type: :controller do
 
       it "decorates the content item" do
         expect(assigns(:content_item)).to be_decorated
-        expect(assigns(:content_item).context).to eq(b: :a)
       end
 
       it "renders the :show template" do

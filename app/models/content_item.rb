@@ -1,6 +1,28 @@
 class ContentItem < ApplicationRecord
+  attr_accessor :proxy
+
   has_and_belongs_to_many :organisations
   has_and_belongs_to_many :taxonomies
+
+  def title
+    proxy[:title]
+  end
+
+  def description
+    proxy[:description]
+  end
+
+  def document_type
+    proxy[:document_type]
+  end
+
+  def public_updated_at
+    proxy[:public_updated_at]
+  end
+
+  def url
+    "https://gov.uk#{proxy[:base_path]}"
+  end
 
   def self.create_or_update!(attributes)
     content_id = attributes.fetch(:content_id)
@@ -29,5 +51,11 @@ class ContentItem < ApplicationRecord
 
   def existing_attributes(attributes)
     attributes.slice(*self.attributes.symbolize_keys.keys)
+  end
+
+# private
+
+  def proxy
+    @proxy ||= ContentItemsService.new.get(content_id)
   end
 end
