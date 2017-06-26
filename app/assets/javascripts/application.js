@@ -11,4 +11,9 @@
 // about supported directives.
 //
 //= require_tree .
+//= require select2
 //= require bootstrap-tagsinput.js
+
+$(document).ready(function() {
+  $(".select2").select2({ allowClear: true });
+});
