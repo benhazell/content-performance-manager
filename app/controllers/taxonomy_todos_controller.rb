@@ -19,6 +19,6 @@ private
   end
 
   def todo_params
-    params.require(:taxonomy_todo_form).permit(:new_terms)
+    params.require(:taxonomy_todo_form).permit(:new_terms, existing_terms: [])
   end
 end

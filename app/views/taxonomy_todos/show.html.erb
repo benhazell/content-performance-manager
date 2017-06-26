@@ -29,6 +29,14 @@
       </div>
     </div>
 
+    <div class='form-group'>
+      <div class='form-wrapper'>
+      <%= f.select :existing_terms, @todo_form.terms_for_select.collect { |t| [t.name, t.id] },
+          { include_blank: true },
+          { multiple: true, class: "form-control select2" } %>
+      </div>
+    </div>
+
     <%= f.submit "Save", class: "btn btn-success" %>
   <% end %>
 </div>

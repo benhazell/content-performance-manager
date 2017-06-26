@@ -7,7 +7,8 @@ RSpec.feature "Generating terms", type: :feature do
     when_i_visit_the_taxonomy_project_page
     and_i_click_to_start_with_a_project
     then_i_should_see_a_page
-    when_i_submit_a_term
+    when_i_select_a_previously_submitted_term
+    and_i_submit_a_new_term
     then_the_term_is_saved
     and_i_see_the_next_page
 
@@ -17,6 +18,7 @@ RSpec.feature "Generating terms", type: :feature do
 
   def given_theres_a_project_with_todos
     @project = create(:taxonomy_project, name: 'A Fancy Group')
+    create(:term, name: "Previously Termed", taxonomy_project: @project)
 
     @content_item = create(:content_item, title: 'A Fancy Content Item')
     @another_content_item = create(:content_item, title: 'Another Content Item')
@@ -36,7 +38,11 @@ RSpec.feature "Generating terms", type: :feature do
     expect(page.body).to match "A Fancy Content Item"
   end
 
-  def when_i_submit_a_term
+  def when_i_select_a_previously_submitted_term
+    select "Previously Termed", from: "taxonomy_todo_form_existing_terms"
+  end
+
+  def and_i_submit_a_new_term
     fill_in :taxonomy_todo_form_new_terms, with: "The First, The Second, The Third"
     click_on "Save"
     @todo.reload
@@ -44,7 +50,7 @@ RSpec.feature "Generating terms", type: :feature do
 
   def then_the_term_is_saved
     expect(@todo).to be_completed
-    expect(@todo.terms.count).to eql(3)
+    expect(@todo.terms.count).to eql(4)
   end
 
   def and_i_see_the_next_page
@@ -56,6 +62,7 @@ RSpec.feature "Generating terms", type: :feature do
   end
 
   def then_i_see_the_generated_terms
+    expect(page).to have_content 'Previously Termed'
     expect(page).to have_content 'The First'
     expect(page).to have_content 'The Second'
     expect(page).to have_content 'The Third'
