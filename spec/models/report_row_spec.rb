@@ -39,7 +39,7 @@ RSpec.describe ReportRow do
   specify { expect(subject.url).to eq                     "https://gov.uk/example/path" }
   specify { expect(subject.is_work_needed).to eq          "Yes" }
   specify { expect(subject.page_views).to eq              "1,234" }
-  specify { expect(subject.response_values).to start_with %w(No No No) }
+  specify { expect(subject.response_values).to start_with %w(Yes Yes Yes) }
   specify { expect(subject.primary_organisation).to eq    "HMRC" }
   specify { expect(subject.other_organisations).to eq     "" }
   specify { expect(subject.content_type).to eq            "Travel Advice" }
@@ -54,8 +54,8 @@ RSpec.describe ReportRow do
   end
 
   context "when the audit is passing" do
-    before do
-      content_item2 = FactoryGirl.create(
+    let!(:content_item_passing_audit) do
+      FactoryGirl.create(
         :content_item,
         title: "Title2",
         base_path: "/example/path2",
@@ -65,14 +65,20 @@ RSpec.describe ReportRow do
         content_id: "id456",
         publishing_app: "whitehall",
       )
-      failing_audit = FactoryGirl.create(:audit, content_item: content_item2)
+    end
+    let!(:passing_audit) { FactoryGirl.create(:audit, content_item: content_item_passing_audit) }
+
+    let!(:passing_responses) do
       Question.all.map do |question|
-          FactoryGirl.create(:response, audit: failing_audit, question: question, value: "no")
-        end
+        FactoryGirl.create(:response, audit: passing_audit, question: question, value: "no")
+      end
     end
 
+    before { audit.destroy }
+
+    subject { described_class.precompute(content_item_passing_audit) }
+
     specify do
-      binding.pry
       expect(subject.is_work_needed).to eq "No"
     end
   end

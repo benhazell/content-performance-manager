@@ -46,7 +46,7 @@ class ReportRow < ApplicationRecord
       next unless response
 
       if response.boolean?
-        format_boolean(response.passing?)
+        format_boolean(response.failing?)
       else
         response.value
       end
