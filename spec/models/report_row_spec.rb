@@ -53,6 +53,30 @@ RSpec.describe ReportRow do
     specify { expect(subject.response_values).to eq [nil] * 10 }
   end
 
+  context "when the audit is passing" do
+    before do
+      content_item2 = FactoryGirl.create(
+        :content_item,
+        title: "Title2",
+        base_path: "/example/path2",
+        document_type: "travel_advice_the_second",
+        public_updated_at: "2017-02-15",
+        six_months_page_views: 1234,
+        content_id: "id456",
+        publishing_app: "whitehall",
+      )
+      failing_audit = FactoryGirl.create(:audit, content_item: content_item2)
+      Question.all.map do |question|
+          FactoryGirl.create(:response, audit: failing_audit, question: question, value: "no")
+        end
+    end
+
+    specify do
+      binding.pry
+      expect(subject.is_work_needed).to eq "No"
+    end
+  end
+
   context "when the content item has many organisations" do
     before do
       aaib = FactoryGirl.create(:content_item, title: "AAIB")
