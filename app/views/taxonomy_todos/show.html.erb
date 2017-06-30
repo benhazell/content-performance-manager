@@ -126,31 +126,32 @@
 </div>
 
 <script>
-  var html=`
-  $.each($('a'), function() {
-      var old_url = $(this).attr('href');
-      var new_url = old_url;
-      if (old_url.startsWith('/'))
-      {
-          new_url = '/proxy/govuk'+old_url
-      }
-      else if (old_url.startsWith('https://gov.uk/'))
-      {
-         new_url = old_url.replace('https://gov.uk', '/proxy/govuk');
-      }
-      else if (old_url.startsWith('https://www.gov.uk/'))
-      {
-         new_url = old_url.replace('https://www.gov.uk', '/proxy/govuk');
-      };
-      $(this).attr('href', new_url)
-  });`
+    var rewriteUrls = function(window) {
+        var iFrameJQuery = window.jQuery;
 
-  $("#frame1").load(function () {
-      console.log("SHD")
-      frames[0].window.eval(html);
+        iFrameJQuery('a').each(function() {
+            var oldUrl = iFrameJQuery(this).attr('href');
+            var newUrl = oldUrl;
+            if (oldUrl.startsWith('/'))
+            {
+                newUrl = '<%= Proxies::GovernmentProxy::PROXY_BASE_PATH.chomp('/') %>'+oldUrl
+            }
+            else if (oldUrl.startsWith('https://gov.uk/'))
+            {
+                newUrl = oldUrl.replace('https://gov.uk/', '<%= Proxies::GovernmentProxy::PROXY_BASE_PATH %>');
+            }
+            else if (oldUrl.startsWith('https://www.gov.uk/'))
+            {
+                newUrl = oldUrl.replace('https://www.gov.uk/', '<%= Proxies::GovernmentProxy::PROXY_BASE_PATH %>');
+            };
+            iFrameJQuery(this).attr('href', newUrl);
+        });
+    };
 
-  });
-  $("#frame2").load(function () {
-      frames[1].window.eval(html);
-  });
+    $("iframe").each(function() {
+        var wndw = (this.contentWindow || this.contentDocument)
+        $(this).on('load', function () {
+            rewriteUrls(wndw)
+        });
+    });
 </script>
