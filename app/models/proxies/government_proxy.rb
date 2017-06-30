@@ -5,13 +5,10 @@ module Proxies
     PROXY_BASE_PATH = '/proxy/govuk/'.freeze
 
     def rewrite_env(env)
-      # puts JSON.pretty_generate(env)
       env['HTTP_HOST'] = 'www.gov.uk:443'
       env['REQUEST_URI'] = env['HTTP_HOST']
       env['SERVER_NAME'] = 'www.gov.uk'
       env['SERVER_PORT'] = 443
-
-      # Remove forwarding parameters
       env['SCRIPT_NAME'] = nil
       env['HTTP_X_FORWARDED_PORT'] = nil
       env['HTTP_X_FORWARDED_PROTO'] = nil
