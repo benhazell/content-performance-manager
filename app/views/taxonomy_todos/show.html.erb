@@ -7,7 +7,7 @@
         <h4 class="modal-title" id="myModalLabel"><%=@todo_form.title%></h4>
       </div>
       <div class="modal-body">
-        <iframe id='#frame' src="<%=@todo_form.url%>"  sandbox="" width="100%" height="600" scrolling="yes"></iframe>
+        <iframe id='frame1' src="<%=@todo_form.proxy_url%>"  width="100%" height="600" scrolling="yes"></iframe>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -76,7 +76,7 @@
   </div>
 
   <div class="add-top-padding">
-    <iframe id='#frame' src="<%=@todo_form.url%>"  sandbox="" width="100%" height="800" scrolling="yes"></iframe>
+    <iframe id='frame2' src="<%=@todo_form.proxy_url%>"  width="100%" height="800" scrolling="yes"></iframe>
   </div>
 </div>
 
@@ -124,3 +124,33 @@
     </div>
   </div>
 </div>
+
+<script>
+  var html=`
+  $.each($('a'), function() {
+      var old_url = $(this).attr('href');
+      var new_url = old_url;
+      if (old_url.startsWith('/'))
+      {
+          new_url = '/proxy/govuk'+old_url
+      }
+      else if (old_url.startsWith('https://gov.uk/'))
+      {
+         new_url = old_url.replace('https://gov.uk', '/proxy/govuk');
+      }
+      else if (old_url.startsWith('https://www.gov.uk/'))
+      {
+         new_url = old_url.replace('https://www.gov.uk', '/proxy/govuk');
+      };
+      $(this).attr('href', new_url)
+  });`
+
+  $("#frame1").load(function () {
+      console.log("SHD")
+      frames[0].window.eval(html);
+
+  });
+  $("#frame2").load(function () {
+      frames[1].window.eval(html);
+  });
+</script>

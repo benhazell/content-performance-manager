@@ -26,6 +26,7 @@ gem 'turbolinks'
 gem 'twitter-typeahead-rails'
 gem 'uglifier'
 gem 'unicorn'
+gem 'rack-proxy'
 
 group :development do
   gem 'web-console'

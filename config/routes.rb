@@ -36,4 +36,7 @@ Rails.application.routes.draw do
   if Rails.env.development?
     mount GovukAdminTemplate::Engine, at: "/style-guide"
   end
+
+  mount Proxies::GovernmentProxy.new => Proxies::GovernmentProxy::PROXY_BASE_PATH
+
 end
