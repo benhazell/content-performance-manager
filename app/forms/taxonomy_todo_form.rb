@@ -15,6 +15,10 @@ class TaxonomyTodoForm
     taxonomy_todo.content_item.decorate
   end
 
+  def project
+    taxonomy_todo.taxonomy_project
+  end
+
   def proxy_url
     File.join(Proxies::GovernmentProxy::PROXY_BASE_PATH, base_path)
   end
