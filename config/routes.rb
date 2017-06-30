@@ -38,5 +38,4 @@ Rails.application.routes.draw do
   end
 
   mount Proxies::GovernmentProxy.new => Proxies::GovernmentProxy::PROXY_BASE_PATH
-
 end

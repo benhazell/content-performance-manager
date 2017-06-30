@@ -1,10 +1,8 @@
 require 'json'
 
 module Proxies
-
   class GovernmentProxy < Rack::Proxy
-
-    PROXY_BASE_PATH = '/proxy/govuk/'
+    PROXY_BASE_PATH = '/proxy/govuk/'.freeze
 
     def rewrite_env(env)
       # puts JSON.pretty_generate(env)
@@ -26,7 +24,5 @@ module Proxies
       status, headers, body = triplet
       [status, headers.tap { |h| h['x-frame-options'] = 'ALLOWALL' }, body]
     end
-
-
   end
 end
