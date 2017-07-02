@@ -10,9 +10,9 @@ class ContentItemsController < ApplicationController
     @search.page = params[:page]
     @search.execute
 
-    @content_items = @search.content_items.decorate
+    @metrics = MetricBuilder.new.run_collection(@search.content_items)
 
-    @metrics = MetricBuilder.new.run_collection(ContentItem.all)
+    @content_items = @search.content_items.decorate
   end
 
   def show
