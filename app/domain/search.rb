@@ -2,6 +2,7 @@ class Search
   FILTERABLE_LINK_TYPES = [
     Link::PRIMARY_ORG,
     Link::ALL_ORGS,
+    Link::TAXONOMIES,
   ].freeze
 
   GROUPABLE_LINK_TYPES = [

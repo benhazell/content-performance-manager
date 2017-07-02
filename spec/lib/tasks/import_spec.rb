@@ -13,18 +13,6 @@ RSpec.describe 'Import organisation rake task' do
     end
   end
 
-  describe 'import:all_taxons' do
-    before do
-      Rake::Task['import:all_taxons'].reenable
-    end
-
-    it 'runs the process to import all taxons' do
-      expect_any_instance_of(Importers::AllTaxons).to receive(:run)
-
-      Rake::Task['import:all_taxons'].invoke
-    end
-  end
-
   describe 'import:all_inventory' do
     before do
       Rake::Task['import:all_inventory'].reenable

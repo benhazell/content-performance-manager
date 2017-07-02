@@ -74,15 +74,4 @@ FactoryGirl.define do
       end
     end
   end
-
-  # deprecated
-  factory :taxon do
-    sequence(:content_id) { |index| "content-id-#{index}" }
-    sequence(:title) { |index| "title-#{index}" }
-  end
-
-  factory :organisation, class: ContentItem do
-    sequence(:title) { |index| "organisation-title-#{index}" }
-    sequence(:content_id) { |index| "organisation-content-id-#{index}" }
-  end
 end

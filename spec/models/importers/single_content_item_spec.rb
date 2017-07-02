@@ -3,20 +3,20 @@ require "rails_helper"
 RSpec.describe Importers::SingleContentItem do
   let(:content_id) { "id-123" }
 
-  let!(:org1) { FactoryGirl.create(:organisation, content_id: "org-1") }
-  let!(:org2) { FactoryGirl.create(:organisation, content_id: "org-2") }
+  let!(:org1) { create(:content_item, content_id: "org-1") }
+  let!(:org2) { create(:content_item, content_id: "org-2") }
 
-  let!(:taxon1) { FactoryGirl.create(:taxon, content_id: "taxon-1") }
-  let!(:taxon2) { FactoryGirl.create(:taxon, content_id: "taxon-2") }
+  let!(:taxon1) { create(:content_item, content_id: "taxon-1") }
+  let!(:taxon2) { create(:content_item, content_id: "taxon-2") }
 
-  let(:content_item) { FactoryGirl.build(:content_item, content_id: content_id, title: "title") }
+  let(:content_item) { build(:content_item, content_id: content_id, title: "title") }
 
   def links
     [
-      FactoryGirl.build(:link, source_content_id: content_id, link_type: "organisations", target_content_id: "org-1"),
-      FactoryGirl.build(:link, source_content_id: content_id, link_type: "organisations", target_content_id: "org-2"),
-      FactoryGirl.build(:link, source_content_id: content_id, link_type: "taxons", target_content_id: "taxon-1"),
-      FactoryGirl.build(:link, source_content_id: content_id, link_type: "taxons", target_content_id: "taxon-2"),
+      build(:link, source_content_id: content_id, link_type: "organisations", target_content_id: "org-1"),
+      build(:link, source_content_id: content_id, link_type: "organisations", target_content_id: "org-2"),
+      build(:link, source_content_id: content_id, link_type: "taxons", target_content_id: "taxon-1"),
+      build(:link, source_content_id: content_id, link_type: "taxons", target_content_id: "taxon-2"),
     ]
   end
 
@@ -40,8 +40,8 @@ RSpec.describe Importers::SingleContentItem do
     content_item = ContentItem.last
 
     expect(content_item.title).to eq("title")
-    expect(content_item.organisations_tmp).to eq [org1, org2]
-    expect(content_item.taxons).to eq [taxon1, taxon2]
+    expect(content_item.linked_organisations).to eq [org1, org2]
+    expect(content_item.linked_taxons).to eq [taxon1, taxon2]
     expect(content_item.number_of_pdfs).to eq(10)
   end
 
@@ -67,11 +67,10 @@ RSpec.describe Importers::SingleContentItem do
 
   context "when the content item already exists" do
     before do
-      FactoryGirl.create(
+      create(
         :content_item,
         content_id: content_id,
         title: "old title",
-        taxons: [taxon2],
         number_of_pdfs: 5,
       )
     end
@@ -79,8 +78,8 @@ RSpec.describe Importers::SingleContentItem do
     it "updates the content item" do
       expect { subject.run(content_id) }
         .to  change { ContentItem.last.title }.from("old title").to("title")
-        .and change { ContentItem.last.organisations_tmp.to_a }.from([]).to([org1, org2])
-        .and change { ContentItem.last.taxons.to_a }.from([taxon2]).to([taxon1, taxon2])
+        .and change { ContentItem.last.linked_organisations.to_a }.from([]).to([org1, org2])
+        .and change { ContentItem.last.linked_taxons.to_a }.from([]).to([taxon1, taxon2])
         .and change { ContentItem.last.number_of_pdfs }.from(5).to(10)
     end
   end

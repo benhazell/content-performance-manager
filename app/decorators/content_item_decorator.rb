@@ -10,7 +10,7 @@ class ContentItemDecorator < Draper::Decorator
   end
 
   def organisation_links
-    names = object.organisations_tmp.collect do |organisation|
+    names = object.linked_organisations.collect do |organisation|
       helpers.link_to(organisation.title, helpers.content_item_path(organisation.id))
     end
 
@@ -18,7 +18,7 @@ class ContentItemDecorator < Draper::Decorator
   end
 
   def taxons_as_string
-    object.taxons.map(&:title).join(', ')
+    object.linked_taxons.map(&:title).join(', ')
   end
 
   def topics

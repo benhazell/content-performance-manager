@@ -11,17 +11,18 @@ class ContentItemsDecorator < Draper::CollectionDecorator
   )
 
   def header(filters = {})
-    organisation = filters[:organisation]
-    taxon = filters[:taxon]
-
-    if organisation.present? && taxon.present?
-      "#{organisation.title} + #{taxon.title}"
-    elsif organisation.present?
-      organisation.title
-    elsif taxon.present?
-      taxon.title
-    else
-      "GOV.UK"
-    end
+    "pending"
+    # organisation = filters[:organisation]
+    # taxon = filters[:taxon]
+    #
+    # if organisation.present? && taxon.present?
+    #   "#{organisation.title} + #{taxon.title}"
+    # elsif organisation.present?
+    #   organisation.title
+    # elsif taxon.present?
+    #   taxon.title
+    # else
+    #   "GOV.UK"
+    # end
   end
 end

@@ -1,8 +1,6 @@
-require 'features/common/pagination_spec_helper'
-
 RSpec.feature "Filter in content items", type: :feature do
   before do
-    FactoryGirl.create(:user)
+    create(:user)
   end
 
   context "filtering by search term" do
@@ -37,62 +35,35 @@ RSpec.feature "Filter in content items", type: :feature do
     end
   end
 
-  context "filtering by organisation" do
-    scenario "the user selects an organisation from the organisations select box, clicks the filter button and retrieves a filtered list of the organisation's content items" do
-      create :organisation, content_id: "the-content-id-1", title: "org 1"
+  context "filtering" do
+    # Organisations:
+    let!(:hmrc) {create(:content_item, title: "HMRC")}
+    let!(:dfe) {create(:content_item, title: "DFE")}
 
+    # Content
+    let!(:felling) {create(:content_item, title: "Tree felling")}
+    let!(:vat) {create(:content_item, title: "VAT")}
+
+    before do
+      # Links:
+      create(:link, source: vat, target: hmrc, link_type: "organisations")
+      create(:link, source: felling, target: dfe, link_type: "organisations")
+    end
+
+    scenario "filtering by organisation" do
       visit "/content_items"
-      select "org 1", from: "organisation_content_id"
+      select "HMRC", from: "organisations"
       click_on "Filter"
 
-      expected_path = "organisations=the-content-id-1"
-
-      expect(current_url).to include(expected_path)
+      expect(page).to have_content("VAT")
     end
 
     scenario "the users previously filtered organisation is selected after filtering" do
-      create :organisation, title: "org 1"
-
       visit "/content_items"
-      select "org 1", from: "organisation_content_id"
+      select "HMRC", from: "organisations"
       click_on "Filter"
 
-      expect(page).to have_select(:organisation_content_id, selected: 'org 1')
-    end
-  end
-
-  context "filtering by taxon" do
-    scenario "the user selects a taxon from the taxons box, clicks the filter button and retrieves the filtered list of taxon's content items" do
-      create :taxon, title: "taxon 1", content_id: "123"
-
-      visit "/content_items"
-      select "taxon 1", from: "taxon_content_id"
-      click_on "Filter"
-
-      expected_path = "taxon_content_id=123"
-
-      expect(current_url).to include(expected_path)
-    end
-
-    scenario "the users previously filtered taxon is selected after filtering" do
-      create :taxon, title: "taxon 1"
-
-      visit "/content_items"
-      select "taxon 1", from: "taxon_content_id"
-      click_on "Filter"
-
-      expect(page).to have_select(:taxon_content_id, selected: 'taxon 1')
-    end
-
-    scenario "the user's previously filtered taxon is selected after sorting" do
-      create :taxon, title: "taxon 1", content_id: "123"
-
-      visit "content_items"
-      page.select "taxon 1", from: "taxon_content_id"
-      click_on "Filter"
-
-      click_on "Title"
-      expect(page).to have_select(:taxon_content_id, selected: "taxon 1")
+      expect(page).to have_select(:organisations, selected: "VAT")
     end
   end
 
@@ -112,9 +83,11 @@ RSpec.feature "Filter in content items", type: :feature do
     end
 
     scenario "the user can see the additional filters if they are currently filtering by one of them", js: true do
-      create :taxon, title: "taxon 1", content_id: "123"
+      content = create(:content_item, title: "Offsted report")
+      taxonomy = create(:content_item, title: "Education")
+      create(:link, source: content, target: taxonomy, link_type: "taxons")
 
-      visit "/content_items?taxon_content_id=123"
+      visit "/content_items?taxonomies_ids=#{content.content_id}"
 
       expect(page).to have_selector('#additionalFilters', visible: true)
     end

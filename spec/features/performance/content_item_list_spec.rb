@@ -1,14 +1,6 @@
-require "features/common/pagination_spec_helper"
-
 RSpec.feature "Content Items List", type: :feature do
   before do
     FactoryGirl.create(:user)
-  end
-
-  describe "User can navigate paged lists of content items" do
-    before { create_list :content_item, 3 }
-
-    it_behaves_like 'a paginated list', 'content_items'
   end
 
   scenario "User does can see CPM feedback survey link in banner" do

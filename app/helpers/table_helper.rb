@@ -1,5 +1,5 @@
 module TableHelper
-  def sort_table_header(heading:, attribute:, filter_options: )
+  def sort_table_header(heading:, attribute:, filter_options:)
     SortTable.new(self, heading, attribute, filter_options).render
   end
 
@@ -23,7 +23,7 @@ module TableHelper
 
   private
 
-    def link(label, order, filter_options)
+    def link(label, order, _filter_options)
       link_options = {
           sort: attribute,
           order: order
