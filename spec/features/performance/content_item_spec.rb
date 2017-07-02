@@ -50,7 +50,7 @@ RSpec.feature "Content Item Details", type: :feature do
 
     visit "/content_items/#{content.id}"
 
-    expect(page).to have_text('A Taxon, Another Taxon')
+    expect(page).to have_text('Education, Health')
   end
 
   scenario "Renders stats for Google Analytics" do
