@@ -15,7 +15,6 @@ module Importers
       content_item = content_items_service.fetch(content_id)
       links = content_items_service.links(content_id)
 
-      set_organisations(content_item, links)
       set_taxons(content_item, links)
       set_metrics(content_item)
 
@@ -26,14 +25,6 @@ module Importers
     end
 
   private
-
-    def set_organisations(content_item, links)
-      org_ids = links
-        .select { |l| l.link_type == "organisations" }
-        .map(&:target_content_id)
-
-      content_item.add_organisations_by_id(org_ids)
-    end
 
     def set_taxons(content_item, links)
       taxon_ids = links
@@ -58,7 +49,6 @@ module Importers
           .except(:id, :created_at, :updated_at)
 
         existing.attributes = attributes
-        existing.organisations = content_item.organisations
         existing.taxons = content_item.taxons
 
         existing.save!

@@ -4,8 +4,7 @@ RSpec.describe ContentItemsDecorator, type: :decorator do
 
   context "without filter params" do
     it "renders the default page title" do
-      content_items = [build(:content_item)]
-      subject = ContentItemsDecorator.new(content_items)
+      subject = ContentItemsDecorator.new([])
 
       expect(subject.header).to eq("GOV.UK")
     end
@@ -21,8 +20,7 @@ RSpec.describe ContentItemsDecorator, type: :decorator do
 
   context "with taxon filter" do
     it "renders the taxon title as page title" do
-      content_items = [build(:content_item, taxons: [taxon])]
-      subject = ContentItemsDecorator.new(content_items)
+      subject = ContentItemsDecorator.new([])
 
       expect(subject.header(taxon: taxon)).to eq("taxon a")
     end
@@ -30,8 +28,7 @@ RSpec.describe ContentItemsDecorator, type: :decorator do
 
   context "with both organisation and taxon filters" do
     it "renders the organisation and taxon titles seperated by a '+'" do
-      content_items = [build(:content_item, organisations: [organisation], taxons: [taxon])]
-      subject = ContentItemsDecorator.new(content_items)
+      subject = ContentItemsDecorator.new([])
 
       expect(subject.header(organisation: organisation, taxon: taxon)).to eq("Organisation title + taxon a")
     end

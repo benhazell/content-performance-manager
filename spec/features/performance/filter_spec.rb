@@ -45,7 +45,7 @@ RSpec.feature "Filter in content items", type: :feature do
       select "org 1", from: "organisation_content_id"
       click_on "Filter"
 
-      expected_path = "organisation_content_id=the-content-id-1"
+      expected_path = "organisations=the-content-id-1"
 
       expect(current_url).to include(expected_path)
     end

@@ -1,22 +1,25 @@
 class ContentItemsController < ApplicationController
   before_action :set_organisation, only: :index
   before_action :set_taxon, only: :index
-  before_action :set_filter_options, only: :index
-  before_action :set_query_options, only: :index
-  before_action :set_all_organisations, only: :index
-  before_action :set_all_taxons, only: :index
+
+  helper_method :filter_params
 
   def index
-    query = Queries::ContentItemsQuery.new(@query_options)
-    @content_items = query.paginated_results.decorate
-    @metrics = MetricBuilder.new.run_collection(query.results)
+    @search = Search.new
+    @search.filter_by(link_type: Search::FILTERABLE_LINK_TYPES, target_ids: params[:organisations]) if params[:organisations].present?
+    @search.page = params[:page]
+    @search.execute
+
+    @content_items = @search.content_items.decorate
+
+    @metrics = MetricBuilder.new.run_collection(ContentItem.all)
   end
 
   def show
     @content_item = ContentItem.find(params[:id]).decorate
   end
 
-private
+  private
 
   def set_query_options
     @query_options = {
@@ -51,4 +54,5 @@ private
     @filter_options[:taxon_content_id] = params[:taxon_content_id]
     @filter_options[:query] = params[:query]
   end
+
 end

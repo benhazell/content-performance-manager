@@ -25,6 +25,7 @@ RSpec.configure do |config|
   config.expect_with :rspec do |e|
     e.include_chain_clauses_in_custom_matcher_descriptions = true
   end
+  config.example_status_persistence_file_path = "rspec-failures.txt"
 
   config.before(:suite) do
     ActiveRecord::Migration.maintain_test_schema!

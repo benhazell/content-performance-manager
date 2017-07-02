@@ -2,7 +2,6 @@ require_relative "../app/models/question"
 
 FactoryGirl.define do
   factory :content_item do
-    sequence(:id) { |index| index }
     sequence(:content_id) { |index| "content-id-#{index}" }
     sequence(:title) { |index| "content-item-title-#{index}" }
     sequence(:document_type) { |index| "document_type-#{index}" }
@@ -58,7 +57,6 @@ FactoryGirl.define do
     organisation_slug "government-digital-service"
   end
 
-  # deprecated
   factory :group do
     sequence(:slug) { |index| "slug-#{index}" }
     sequence(:name) { |index| "name-#{index}" }
@@ -83,20 +81,8 @@ FactoryGirl.define do
     sequence(:title) { |index| "title-#{index}" }
   end
 
-  # deprecated
-  factory :organisation do
-    sequence(:id) { |index| index }
-    sequence(:slug) { |index| "slug-#{index}" }
+  factory :organisation, class: ContentItem do
     sequence(:title) { |index| "organisation-title-#{index}" }
     sequence(:content_id) { |index| "organisation-content-id-#{index}" }
-
-    factory :organisation_with_content_items do
-      transient do
-        content_items_count 1
-      end
-      after(:create) do |organisation, evaluator|
-        create_list(:content_item, evaluator.content_items_count, organisations: [organisation])
-      end
-    end
   end
 end

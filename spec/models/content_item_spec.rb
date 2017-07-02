@@ -153,29 +153,6 @@ RSpec.describe ContentItem, type: :model do
     end
   end
 
-  describe "#add_organisations_by_title" do
-    it "adds organisations to the content item" do
-      create(:organisation, content_id: "org_1")
-      create(:organisation, content_id: "org_2")
-      organisations = %w(org_1 org_2)
-      content_item = create(:content_item)
-
-      content_item.add_organisations_by_id(organisations)
-
-      expect(content_item.organisations.count).to eq(2)
-    end
-
-    it "does not add an organisation that is already associated with the content item" do
-      organisation = create(:organisation, content_id: "org_1")
-      content_item = create(:content_item)
-      content_item.organisations << organisation
-
-      content_item.add_organisations_by_id(%w(org_1))
-
-      expect(content_item.organisations.count).to eq(1)
-    end
-  end
-
   describe "#add_taxons_by_id" do
     it "adds taxons to the content item by taxon content_id" do
       content_item = create(:content_item)

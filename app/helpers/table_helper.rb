@@ -1,5 +1,5 @@
 module TableHelper
-  def sort_table_header(heading:, attribute:, filter_options:)
+  def sort_table_header(heading:, attribute:, filter_options: )
     SortTable.new(self, heading, attribute, filter_options).render
   end
 
@@ -8,7 +8,7 @@ module TableHelper
 
     delegate :content_tag, :params, :link_to, :content_items_path, to: :view
 
-    def initialize(view, heading, attribute, filter_options)
+    def initialize(view, heading, attribute, filter_options = {})
       @view = view
       @heading = heading
       @attribute = attribute
@@ -28,7 +28,7 @@ module TableHelper
           sort: attribute,
           order: order
       }
-      link_options.merge!(filter_options)
+      # link_options.merge!(filter_options)
 
       link_to content_items_path(link_options) do
         "#{heading}#{content_tag :span, label, class: 'rm'}".html_safe

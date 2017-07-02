@@ -40,7 +40,7 @@ RSpec.describe Importers::SingleContentItem do
     content_item = ContentItem.last
 
     expect(content_item.title).to eq("title")
-    expect(content_item.organisations).to eq [org1, org2]
+    expect(content_item.organisations_tmp).to eq [org1, org2]
     expect(content_item.taxons).to eq [taxon1, taxon2]
     expect(content_item.number_of_pdfs).to eq(10)
   end
@@ -71,7 +71,6 @@ RSpec.describe Importers::SingleContentItem do
         :content_item,
         content_id: content_id,
         title: "old title",
-        organisations: [org1],
         taxons: [taxon2],
         number_of_pdfs: 5,
       )
@@ -80,7 +79,7 @@ RSpec.describe Importers::SingleContentItem do
     it "updates the content item" do
       expect { subject.run(content_id) }
         .to  change { ContentItem.last.title }.from("old title").to("title")
-        .and change { ContentItem.last.organisations.to_a }.from([org1]).to([org1, org2])
+        .and change { ContentItem.last.organisations_tmp.to_a }.from([]).to([org1, org2])
         .and change { ContentItem.last.taxons.to_a }.from([taxon2]).to([taxon1, taxon2])
         .and change { ContentItem.last.number_of_pdfs }.from(5).to(10)
     end

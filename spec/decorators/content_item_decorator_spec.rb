@@ -18,20 +18,19 @@ RSpec.describe ContentItemDecorator, type: :decorator do
   end
 
   describe "#organisation_links" do
-    let(:organisations) do
-      [
-        build(:organisation, content_id: "content-id-1", title: "title-1"),
-        build(:organisation, content_id: "content-id-2", title: "title-2")
-      ]
-    end
-
-    let(:content_item) { build(:content_item, organisations: organisations).decorate }
+    let(:content_item) { create(:content_item).decorate }
 
     it "has a comma between names" do
+      hmrc = FactoryGirl.create(:content_item, title: "HMRC")
+      FactoryGirl.create(:link, source_content_id: content_item.content_id, target_content_id: hmrc.content_id, link_type: "organisations")
+
+      dfe = FactoryGirl.create(:content_item, title: "DFE")
+      FactoryGirl.create(:link, source_content_id: content_item.content_id, target_content_id: dfe.content_id, link_type: "organisations")
+
       organisation_links = content_item.organisation_links
 
-      expect(organisation_links).to include(%{<a href=\"/content_items?organisation_id=content-id-1\">title-1</a>})
-      expect(organisation_links).to include(%{<a href=\"/content_items?organisation_id=content-id-2\">title-2</a>})
+      expect(organisation_links).to include(%{<a href=\"/content_items/#{hmrc.id}">HMRC</a>})
+      expect(organisation_links).to include(%{<a href=\"/content_items/#{dfe.id}">DFE</a>})
     end
   end
 
