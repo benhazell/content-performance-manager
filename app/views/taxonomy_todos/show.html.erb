@@ -137,34 +137,3 @@
     </div>
   </div>
 </div>
-
-<script>
-    var rewriteUrls = function(window) {
-        var iFrameJQuery = window.jQuery;
-
-        iFrameJQuery('a').each(function() {
-            var oldUrl = iFrameJQuery(this).attr('href');
-            var newUrl = oldUrl;
-            if (oldUrl.startsWith('/'))
-            {
-                newUrl = '<%= Proxies::GovernmentProxy::PROXY_BASE_PATH.chomp('/') %>'+oldUrl
-            }
-            else if (oldUrl.startsWith('https://gov.uk/'))
-            {
-                newUrl = oldUrl.replace('https://gov.uk/', '<%= Proxies::GovernmentProxy::PROXY_BASE_PATH %>');
-            }
-            else if (oldUrl.startsWith('https://www.gov.uk/'))
-            {
-                newUrl = oldUrl.replace('https://www.gov.uk/', '<%= Proxies::GovernmentProxy::PROXY_BASE_PATH %>');
-            };
-            iFrameJQuery(this).attr('href', newUrl);
-        });
-    };
-
-    $("iframe").each(function() {
-        var wndw = (this.contentWindow || this.contentDocument)
-        $(this).on('load', function () {
-            rewriteUrls(wndw)
-        });
-    });
-</script>
