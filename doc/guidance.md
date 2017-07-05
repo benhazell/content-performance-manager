@@ -1,5 +1,5 @@
 # Audit GOV.UK content
-We've created this document to help you understand the questions on the audit spreadsheet before your team starts auditing content. We've also provided guidance about things to consider, and examples of good and bad content.
+We have created this document to help you understand the questions on the audit spreadsheet before your team starts auditing content. We've also provided guidance about things to consider, and examples of good and bad content.
 
 ---
 
